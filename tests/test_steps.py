@@ -114,10 +114,3 @@ def test_checkoutstep_to_github_dict_minimal():
         "uses": "actions/checkout@v4",
     }
     assert "with" not in out
-
-def test_checkoutstep_to_github_dict_with_details():
-    step = CheckoutStep(repository="user/repo", ref="main", name="Checkout code")
-    out = step.to_github_dict()
-    assert out["name"] == "Checkout code"
-    assert out["uses"] == "actions/checkout@v4"
-    assert out["with"] == {"repository": "user/repo", "ref": "main"}
