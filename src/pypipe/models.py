@@ -8,6 +8,7 @@ transpiles them lives in other modules (like runner.py).
 import sys
 from dataclasses import dataclass, field
 from typing import List, Dict, Set, Optional, Any
+import pytest
 
 # --- Step Base Class ---
 # We define a simple base class for Step so that the
@@ -28,6 +29,33 @@ class Step:
     def to_gitlab_dict(self) -> Dict[str, Any]:
         """The method the GitLab Transpiler will call."""
         raise NotImplementedError
+    
+
+# --- Tests for Step Base Class ---
+
+def test_step_base_class_raises_not_implemented():
+    """
+    Tests that the abstract methods on the base Step class
+    raise NotImplementedError if they are called directly.
+    """
+    
+    # We can't instantiate 'Step' directly, so we make a
+    # "bad" subclass that inherits from Step but doesn't
+    # implement the abstract methods.
+    class _BadStep(Step):
+        pass
+
+    bad_step = _BadStep(name="test")
+    
+    # Check that calling each method raises the correct error
+    with pytest.raises(NotImplementedError):
+        bad_step.execute(context=None)
+
+    with pytest.raises(NotImplementedError):
+        bad_step.to_github_dict()
+        
+    with pytest.raises(NotImplementedError):
+        bad_step.to_gitlab_dict()
 
 
 # --- Job Object ---
