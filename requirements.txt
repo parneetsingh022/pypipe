@@ -1,0 +1,12 @@
+colorama==0.4.6
+coverage==7.11.2
+iniconfig==2.3.0
+mypy==1.18.2
+mypy_extensions==1.1.0
+packaging==25.0
+pathspec==0.12.1
+pluggy==1.6.0
+Pygments==2.19.2
+pytest==9.0.0
+pytest-cov==7.0.0
+typing_extensions==4.15.0
