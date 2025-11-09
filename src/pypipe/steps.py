@@ -93,17 +93,9 @@ class CheckoutStep(Step):
             # would need to construct a full URL.
             cmd += f" https://github.com/{self.repository}.git"
         
-        try:
-            # For this example, we'll just print.
-            # A real 'git clone' in a CI step is complex:
-            # - Needs to clone into the correct directory.
-            # - Needs to handle auth (via context).
-            # - Needs to 'git checkout' the specific ref.
-            print(f"[Simulating] {cmd}")
-            # subprocess.run(cmd, shell=True, check=True)
-        except Exception as e:
-            print(f"Step '{self.name}' failed: {e}")
-            raise e
+
+        print(f"[Simulating] {cmd}")
+
 
     def to_github_dict(self) -> Dict[str, Any]:
         """Translates to the 'actions/checkout' reusable action."""

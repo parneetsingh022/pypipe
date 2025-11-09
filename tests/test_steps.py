@@ -121,16 +121,3 @@ def test_checkoutstep_to_github_dict_with_details():
     assert out["name"] == "Checkout code"
     assert out["uses"] == "actions/checkout@v4"
     assert out["with"] == {"repository": "user/repo", "ref": "main"}
-
-
-def test_checkoutstep_execute_handles_exception(monkeypatch):
-    step = CheckoutStep(repository="user/repo", name="Checkout code")
-
-    # Replace print with something that raises, to simulate a failure
-    def fake_print(*args, **kwargs):
-        raise RuntimeError("simulated failure")
-
-    monkeypatch.setattr("builtins.print", fake_print)
-
-    with pytest.raises(RuntimeError, match="simulated failure"):
-        step.execute(context={})
