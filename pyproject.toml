@@ -18,12 +18,16 @@ testpaths = ["tests"]
 line-length = 100
 target-version = "py311"
 
+# If your code lives in src/pypipe/, tell hatchling to package it.
+[tool.hatch.build.targets.wheel]
+packages = ["src/pypipe"]
+
 # Keep tox config tiny using legacy_tox_ini so we don't duplicate sections.
 [tool.tox]
 requires = ["tox>=4.18"]
 legacy_tox_ini = """
 [tox]
-envlist = py311,py312,py313,py314,lint
+envlist = py311,py312,py313,py314,lint,typecheck
 skip_missing_interpreters = true
 
 [testenv]
@@ -33,4 +37,19 @@ commands = pytest
 [testenv:lint]
 deps = ruff>=0.6
 commands = ruff check .
+
+[testenv:typecheck]
+deps = mypy>=1.11
+commands = mypy src/pypipe
 """
+
+# MyPy config (as you added)
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+show_error_codes = true
+pretty = true
