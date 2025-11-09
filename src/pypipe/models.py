@@ -19,12 +19,12 @@ class Step(ABC):
     name: str = ""
 
     @abstractmethod
-    def execute(self, context: Any) -> None:
+    def execute(self, context: Any) -> None: # pragma: no cover
         """The method the LocalRunner will call."""
         raise NotImplementedError
 
     @abstractmethod
-    def to_github_dict(self) -> Dict[str, Any]:
+    def to_github_dict(self) -> Dict[str, Any]: # pragma: no cover
         """The method the GitHub Transpiler will call."""
         raise NotImplementedError
     
