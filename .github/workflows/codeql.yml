@@ -1,0 +1,29 @@
+name: codeql
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '15 3 * * 1'  # Mondays at 03:15 UTC
+
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+
+jobs:
+  analyze:
+    name: Analyze (CodeQL)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Initialize CodeQL for Python
+      - uses: github/codeql-action/init@v3
+        with:
+          languages: python
+
+      # For Python projects, no build step is necessary
+      - uses: github/codeql-action/analyze@v3
