@@ -2,7 +2,7 @@
 Tests for the core data models in src/pypipe/models.py
 """
 import pytest
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, Any
 
 from pypipe.models import Job, Step, Pipeline
