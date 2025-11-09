@@ -51,7 +51,7 @@ class Job:
     runner_image: Optional[str] = None
     """(Optional) The container image to run this job in (e.g., "ubuntu-latest")."""
 
-    def add_step(self, step: Step):
+    def add_step(self, step: Step) -> None:
         """A simple helper to add a step to this job."""
         self.steps.append(step)
 
@@ -91,8 +91,8 @@ class Pipeline:
         #    - adj: Adjacency list (job -> list of jobs that depend on it)
         #    - in_degree: Count of dependencies for each job
         
-        adj = {name: [] for name in self.jobs}
-        in_degree = {name: 0 for name in self.jobs}
+        adj: Dict[str, List[str]] = {name: [] for name in self.jobs}
+        in_degree: Dict[str, int] = {name: 0 for name in self.jobs}
         
         for name, job in self.jobs.items():
             for dep_name in job.depends_on:
