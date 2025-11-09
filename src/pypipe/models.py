@@ -19,7 +19,7 @@ class Step(ABC):
     name: str = ""
 
     @abstractmethod
-    def execute(self, context: Any) -> None:
+    def execute(self) -> None:
         """The method the LocalRunner will call."""
         raise NotImplementedError
 

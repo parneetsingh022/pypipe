@@ -31,13 +31,13 @@ class RunShellStep(Step):
             else:
                 self.name = f"run: {self.command}"
 
-    def execute(self, context: Any) -> None:
+    def execute(self) -> None:
         """
         Executes the shell command using subprocess.
         The 'context' can be used
         to pass environment variables or secrets.
         """
-        print(f"--- Running step: {self.name}")
+        print(f"--- Running Step: {self.name}")
         try:
             argv = shlex.split(self.command)
 
@@ -82,9 +82,9 @@ class CheckoutStep(Step):
         if not self.name:
             self.name = "Checkout code"
 
-    def execute(self, context: Any) -> None:
+    def execute(self) -> None:
         """Runs 'git clone' locally."""
-        print(f"--- Running step: {self.name}")
+        print(f"--- Running Step: {self.name}")
         
         # This is a simplified implementation.
         # A real one would handle auth, refs, etc.
