@@ -8,23 +8,27 @@ transpiles them lives in other modules (like runner.py).
 from dataclasses import dataclass, field
 from typing import List, Dict, Set, Optional, Any
 from collections import deque
+from abc import ABC, abstractmethod
 
 # --- Step Base Class ---
 # We define a simple base class for Step so that the
 # Job class can have a type-hinted list of steps.
 @dataclass
-class Step:
+class Step(ABC):
     """Abstract base class for all pipeline steps."""
     name: str = ""
 
+    @abstractmethod
     def execute(self, context: Any) -> None:
         """The method the LocalRunner will call."""
         raise NotImplementedError
 
+    @abstractmethod
     def to_github_dict(self) -> Dict[str, Any]:
         """The method the GitHub Transpiler will call."""
         raise NotImplementedError
     
+    @abstractmethod
     def to_gitlab_dict(self) -> Dict[str, Any]:
         """The method the GitLab Transpiler will call."""
         raise NotImplementedError
