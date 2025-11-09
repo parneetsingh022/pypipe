@@ -1,7 +1,6 @@
 # tests/test_steps.py
-import builtins
 import subprocess
-from unittest.mock import patch, call
+from unittest.mock import patch
 
 import pytest
 
