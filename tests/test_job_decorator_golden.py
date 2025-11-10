@@ -1,8 +1,4 @@
 import uuid
-import textwrap
-
-import pytest
-
 from pypipe.decorators import job
 from pypipe.api import shell, checkout
 from pypipe.transpilers.github import GitHubTranspiler
