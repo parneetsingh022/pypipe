@@ -69,7 +69,7 @@ class CheckoutStep(Step):
 
     def execute(self, context: Any) -> None:
         """Runs 'git clone' locally."""
-        print(f"--- Running step:")
+        print("--- Running step:")
         
         # This is a simplified implementation.
         # A real one would handle auth, refs, etc.
