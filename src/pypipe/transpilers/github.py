@@ -1,4 +1,6 @@
 from ruamel.yaml import YAML
+from ruamel.yaml.comments import CommentedMap
+
 from typing import Dict, Any, Iterable, Optional
 from ..models import Pipeline
 from ..registry import get_default
@@ -30,9 +32,13 @@ class GitHubTranspiler:
 
             jobs_dict[job.name] = job_dict
 
+        on_map = CommentedMap()
+        on_map["push"] = None          # will render as `push:` (or `push: null` depending on representer)
+        on_map["pull_request"] = None  # same
+
         workflow = {
             "name": self.pipeline.name,
-            "on": ["push", "pull_request"],
+            "on": on_map,
             "jobs": jobs_dict,
         }
 

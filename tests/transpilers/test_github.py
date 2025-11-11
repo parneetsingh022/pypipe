@@ -59,7 +59,8 @@ def test_to_dict_structure_with_real_steps():
 
     # Top level
     assert wf["name"] == "CI"
-    assert wf["on"] == ["push", "pull_request"]
+    assert isinstance(wf["on"], dict)
+    assert set(wf["on"].keys()) == {"push", "pull_request"}
     assert set(wf["jobs"].keys()) == {"build", "test"}
 
     # Build job
@@ -111,7 +112,7 @@ def test_to_yaml_pretty_and_key_order():
     out = tr.to_yaml().replace("\r\n", "\n")
 
     # on: should be unquoted, and items should be indented
-    assert "\non:\n  - push\n  - pull_request\n" in out
+    assert "\non:\n  push:\n  pull_request:\n" in out
 
     # 'needs' appears before 'steps' in 'test' job block
     test_block_start = out.find("\n  test:\n")
@@ -124,8 +125,8 @@ def test_to_yaml_pretty_and_key_order():
         """
         name: CI
         on:
-          - push
-          - pull_request
+          push:
+          pull_request:
         jobs:
           build:
             runs-on: ubuntu-latest
