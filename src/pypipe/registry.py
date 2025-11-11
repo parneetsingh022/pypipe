@@ -22,7 +22,7 @@ def get_default() -> Pipeline:
     Returns:
         Pipeline: The default registered pipeline.
     """
-    return _pipelines["ci"]
+    return register_pipeline("ci")
 
 
 def get_pipeline(name: str) -> Pipeline:
