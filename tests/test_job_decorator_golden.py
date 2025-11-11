@@ -1,4 +1,3 @@
-import uuid
 from pypipe.decorators import job
 from pypipe.api import shell, checkout
 from pypipe.transpilers.github import GitHubTranspiler
