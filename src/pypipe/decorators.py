@@ -16,12 +16,14 @@ def job(
     def wrapper(func: Callable[[], R]) -> Callable[[], R]:
         jname = name or func.__name__
         
-        if isinstance(pipeline, Pipeline):
-            pipeline_name = pipeline.name
+        if pipeline is None:
+            pipe = get_default()
+        elif isinstance(pipeline, Pipeline):
+            pipe = pipeline
+        elif isinstance(pipeline, str):
+            pipe = register_pipeline(pipeline)  # your get-or-create
         else:
-            pipeline_name = pipeline
-
-        pipe = get_default() if pipeline is None else register_pipeline(pipeline_name)
+            raise TypeError("pipeline must be None, a str, or a Pipeline")
 
 
         job_obj = Job(
