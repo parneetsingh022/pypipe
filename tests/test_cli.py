@@ -223,3 +223,33 @@ def test_build_deduplicates_double_matched_files(tmp_path, monkeypatch, capsys, 
 
     # Output must be written correctly once
     assert (out_dir / "x.yml").read_text(encoding="utf-8") == "name: x\njobs: {}\n"
+
+
+def test_get_pipelines_dict_raises_when_missing(monkeypatch):
+    """If pypipe.registry has no _pipelines attr, raise a helpful RuntimeError."""
+    from pypipe.cli import _get_pipelines_dict
+    import pypipe.registry as reg
+
+    # Remove the attribute, then restore it so the autouse clean_registry teardown succeeds.
+    monkeypatch.delattr(reg, "_pipelines", raising=False)
+    try:
+        with pytest.raises(RuntimeError, match="No _pipelines found in pypipe.registry"):
+            _get_pipelines_dict()
+    finally:
+        # Restore a dict so clean_registry's .clear()/.update() won't crash
+        monkeypatch.setattr(reg, "_pipelines", {}, raising=False)
+
+
+def test_get_pipelines_dict_raises_when_not_dict(monkeypatch):
+    """If pypipe.registry._pipelines exists but is not a dict, raise the same RuntimeError."""
+    from pypipe.cli import _get_pipelines_dict
+    import pypipe.registry as reg
+
+    # Set to wrong type, then restore it so the autouse clean_registry teardown succeeds.
+    monkeypatch.setattr(reg, "_pipelines", [], raising=False)
+    try:
+        with pytest.raises(RuntimeError, match="No _pipelines found in pypipe.registry"):
+            _get_pipelines_dict()
+    finally:
+        # Restore a dict so clean_registry's .clear()/.update() won't crash
+        monkeypatch.setattr(reg, "_pipelines", {}, raising=False)
