@@ -32,13 +32,9 @@ class GitHubTranspiler:
 
             jobs_dict[job.name] = job_dict
 
-        on_map = CommentedMap()
-        on_map["push"] = None          # will render as `push:` (or `push: null` depending on representer)
-        on_map["pull_request"] = None  # same
-
         workflow = {
             "name": self.pipeline.name,
-            "on": on_map,
+            "on": self.pipeline.pipeline_settings.to_dict(),
             "jobs": jobs_dict,
         }
 
