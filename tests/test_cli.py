@@ -253,3 +253,25 @@ def test_get_pipelines_dict_raises_when_not_dict(monkeypatch):
     finally:
         # Restore a dict so clean_registry's .clear()/.update() won't crash
         monkeypatch.setattr(reg, "_pipelines", {}, raising=False)
+
+
+def test_has_keep_marker_within_max_lines_is_detected(tmp_path):
+    # Marker is on the 10th line (1-based), i == 9 — should be checked with max_lines=10
+    p = tmp_path / "wf.yml"
+    lines = ["noise\n"] * 9 + ["# pypipe: keep\n", "more\n"]
+    p.write_text("".join(lines), encoding="utf-8")
+
+    from pypipe.cli import _has_keep_marker
+    assert _has_keep_marker(p, max_lines=10) is True
+
+
+def test_has_keep_marker_past_max_lines_is_ignored(tmp_path):
+    # Marker is on the 11th line (1-based), i == 10 — loop breaks before seeing it when max_lines=10
+    p = tmp_path / "wf.yml"
+    lines = ["noise\n"] * 10 + ["# pypipe: keep\n", "more\n"]
+    p.write_text("".join(lines), encoding="utf-8")
+
+    from pypipe.cli import _has_keep_marker
+    assert _has_keep_marker(p, max_lines=10) is False
+    # Sanity check: increasing the window should reveal it
+    assert _has_keep_marker(p, max_lines=11) is True
