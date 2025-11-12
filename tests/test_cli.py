@@ -275,3 +275,106 @@ def test_has_keep_marker_past_max_lines_is_ignored(tmp_path):
     assert _has_keep_marker(p, max_lines=10) is False
     # Sanity check: increasing the window should reveal it
     assert _has_keep_marker(p, max_lines=11) is True
+
+
+
+# ── PermissionError -> chmod -> unlink succeeds -> True
+def test_safe_unlink_permissionerror_then_chmod_then_success(tmp_path, monkeypatch):
+    from pypipe.cli import _safe_unlink
+    target = tmp_path / "file.yml"
+    target.write_text("x", encoding="utf-8")
+
+    calls = {"unlink": 0, "chmod": 0}
+
+    def fake_unlink(self):
+        assert self == target
+        calls["unlink"] += 1
+        if calls["unlink"] == 1:
+            raise PermissionError("locked")
+        # 2nd call succeeds (no exception)
+
+    def fake_chmod(path, mode):
+        assert path == target
+        calls["chmod"] += 1
+        # succeed
+
+    monkeypatch.setattr(Path, "unlink", fake_unlink, raising=True)
+    monkeypatch.setattr(os, "chmod", fake_chmod, raising=True)
+
+    assert _safe_unlink(target) is True
+    assert calls == {"unlink": 2, "chmod": 1}
+
+
+# ── PermissionError -> chmod succeeds -> unlink fails -> False
+def test_safe_unlink_permissionerror_then_chmod_then_unlink_fails(tmp_path, monkeypatch):
+    from pypipe.cli import _safe_unlink
+    target = tmp_path / "file.yml"
+    target.write_text("x", encoding="utf-8")
+
+    calls = {"unlink": 0, "chmod": 0}
+
+    def fake_unlink(self):
+        calls["unlink"] += 1
+        if calls["unlink"] == 1:
+            raise PermissionError("locked")
+        raise OSError("still cannot delete")
+
+    def fake_chmod(path, mode):
+        calls["chmod"] += 1
+        # succeed
+
+    monkeypatch.setattr(Path, "unlink", fake_unlink, raising=True)
+    monkeypatch.setattr(os, "chmod", fake_chmod, raising=True)
+
+    assert _safe_unlink(target) is False
+    assert calls == {"unlink": 2, "chmod": 1}
+
+
+# ── PermissionError -> chmod fails -> False
+def test_safe_unlink_permissionerror_and_chmod_fails(tmp_path, monkeypatch):
+    from pypipe.cli import _safe_unlink
+    target = tmp_path / "file.yml"
+    target.write_text("x", encoding="utf-8")
+
+    calls = {"unlink": 0, "chmod": 0}
+
+    def fake_unlink(self):
+        calls["unlink"] += 1
+        raise PermissionError("locked")
+
+    def fake_chmod(path, mode):
+        calls["chmod"] += 1
+        raise OSError("chmod failed")
+
+    monkeypatch.setattr(Path, "unlink", fake_unlink, raising=True)
+    monkeypatch.setattr(os, "chmod", fake_chmod, raising=True)
+
+    assert _safe_unlink(target) is False
+    assert calls == {"unlink": 1, "chmod": 1}
+
+
+# ── FileNotFoundError -> True
+def test_safe_unlink_file_not_found_returns_true(tmp_path, monkeypatch):
+    from pypipe.cli import _safe_unlink
+    target = tmp_path / "missing.yml"
+
+    def fake_unlink(self):
+        raise FileNotFoundError
+
+    monkeypatch.setattr(Path, "unlink", fake_unlink, raising=True)
+
+    assert _safe_unlink(target) is True
+
+
+# ── Any other Exception -> False
+def test_safe_unlink_other_exception_returns_false(tmp_path, monkeypatch):
+    from pypipe.cli import _safe_unlink
+    target = tmp_path / "file.yml"
+    target.write_text("x", encoding="utf-8")
+
+    def fake_unlink(self):
+        raise RuntimeError("unexpected")
+
+    monkeypatch.setattr(Path, "unlink", fake_unlink, raising=True)
+
+    assert _safe_unlink(target) is False
