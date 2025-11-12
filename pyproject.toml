@@ -13,6 +13,9 @@ dependencies = [
     "ruamel.yaml>=0.18.0",
 ]
 
+[project.scripts]
+pypipe = "pypipe.cli:main"
+
 [tool.pytest.ini_options]
 addopts = "-q"
 testpaths = ["tests"]

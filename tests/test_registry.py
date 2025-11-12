@@ -26,8 +26,8 @@ def test_default_pipeline_exists_and_is_pipeline():
     assert isinstance(pipe, Pipeline)
 
     # Default should be present in the internal map
-    assert "default" in registry._pipelines
-    assert registry._pipelines["default"] is pipe
+    assert "ci" in registry._pipelines
+    assert registry._pipelines["ci"] is pipe
 
 
 def test_register_pipeline_creates_and_returns_pipeline():
@@ -36,7 +36,7 @@ def test_register_pipeline_creates_and_returns_pipeline():
     # It should be retrievable and identical object
     assert registry.get_pipeline("foo") is foo
     # Should not clobber default
-    assert registry.get_default() is registry._pipelines["default"]
+    assert registry.get_default() is registry._pipelines["ci"]
 
 
 def test_register_pipeline_is_idempotent_same_object():
