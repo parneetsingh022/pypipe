@@ -1,4 +1,4 @@
-from pypipe.decorators import job
+from pypipe import job, pipeline, default_pipeline
 from pypipe.steps import shell, checkout
 from pypipe.transpilers.github import GitHubTranspiler
 from pypipe.registry import register_pipeline
@@ -46,3 +46,20 @@ def test_job_decorator_checkout_params(assert_matches_golden):
     out = GitHubTranspiler().to_yaml()
 
     assert_matches_golden(out, "test_job_decorator_checkout_params.yml")
+
+
+def test_default_pipeline_creation_with_push_and_pr(assert_matches_golden):
+    default_pipeline(
+        on_push=['main', 'dev'],
+        on_pull_request=['test1', 'test2']
+    )
+
+
+    @job(name='initial')
+    def initial_job():
+        shell('echo "Hello world!"')
+
+
+    out = GitHubTranspiler().to_yaml()
+
+    assert_matches_golden(out, "test_default_pipeline_creation_with_push_and_pr.yml")

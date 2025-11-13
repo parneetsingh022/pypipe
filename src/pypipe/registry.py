@@ -90,3 +90,14 @@ def pipeline(name: str, **kwargs: Any) -> Pipeline:
 
 def default_pipeline(**kwargs: Any) -> Pipeline:
     return pipeline(name='ci', **kwargs)
+
+
+def reset_registry() -> None:
+    """Reset the global pipeline registry to its initial state.
+
+    This clears all registered pipelines and recreates the default 'ci' pipeline.
+    Useful for ensuring test isolation between runs.
+    """
+    global _pipelines
+    _pipelines.clear()
+    _pipelines["ci"] = Pipeline(name="ci")
