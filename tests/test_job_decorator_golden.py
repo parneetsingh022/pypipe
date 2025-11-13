@@ -120,3 +120,18 @@ def test_pipeline_creation_with_bool(assert_matches_golden):
     out = GitHubTranspiler(mypipe).to_yaml()
 
     assert_matches_golden(out, "test_pipeline_creation_with_bool.yml")
+
+
+def test_pipeline_creation_with_dict_triggers(assert_matches_golden):
+    mypipe = pipeline(
+        name='test_pipeline_creation_with_dict_triggers',
+        on_push={"branches": ["main"], "paths": ["src/**"]},
+        on_pull_request={"branches": ["main"], "paths": ["src/**"]},
+    )
+
+    @job(name='build', pipeline=mypipe)
+    def build_job():
+        shell('pip install pypipe')
+
+    out = GitHubTranspiler(mypipe).to_yaml()
+    assert_matches_golden(out, "test_pipeline_creation_with_dict_triggers.yml")
