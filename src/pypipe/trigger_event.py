@@ -35,7 +35,7 @@ class PipelineSettings:
         # Case 3: User passed True (just enable it)
         # e.g., on_push=True
         if config is True:
-            return None # Empty "run on all"
+            return None # True means trigger on all branches/events (no filters)
 
         # Case 4: User passed a full dict (power user)
         # e.g., on_push={"branches": ["main"], "paths": ["src/**"]}
