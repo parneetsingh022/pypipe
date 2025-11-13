@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
-from typing import Any, Dict, List, Optional, Union,  TypedDict
+from typing import Optional, Dict, Any, List, Union,  TypedDict
 
 Trigger = Union[str, List[str], Dict[str, Any], bool, None]
 
