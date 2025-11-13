@@ -32,9 +32,9 @@ def test_job_decorator_basic(assert_matches_golden):
         shell("pytest -v")
 
     # retrieve the pipeline we decorated into
-    pipeline = register_pipeline(pipeline_name)
+    pipeline_obj = register_pipeline(pipeline_name)
     # transpile to YAML (ruamel.yaml pretty indent expected)
-    out = GitHubTranspiler(pipeline).to_yaml()
+    out = GitHubTranspiler(pipeline_obj).to_yaml()
 
     assert_matches_golden(out, "test_job_decorator_basic.yml")
 
@@ -69,3 +69,54 @@ def test_default_pipeline_creation_with_push_and_pr(assert_matches_golden):
     out = GitHubTranspiler().to_yaml()
 
     assert_matches_golden(out, "test_default_pipeline_creation_with_push_and_pr.yml")
+
+def test_pipeline_creation_with_push(assert_matches_golden):
+    mypipe = pipeline(
+        name = 'test_pipeline_creation_with_push',
+        on_push='main',
+    )
+
+
+    @job(name='build', pipeline=mypipe)
+    def initial_job():
+        shell('pip install pypipe')
+
+
+    out = GitHubTranspiler(mypipe).to_yaml()
+
+    assert_matches_golden(out, "test_pipeline_creation_with_push.yml")
+
+
+def test_pipeline_creation_with_pr(assert_matches_golden):
+    mypipe = pipeline(
+        name = 'test_pipeline_creation_with_pr',
+        on_pull_request='main',
+    )
+
+
+    @job(name='build', pipeline=mypipe)
+    def initial_job():
+        shell('pip install pypipe')
+
+
+    out = GitHubTranspiler(mypipe).to_yaml()
+
+    assert_matches_golden(out, "test_pipeline_creation_with_pr.yml")
+
+
+def test_pipeline_creation_with_bool(assert_matches_golden):
+    mypipe = pipeline(
+        name = 'test_pipeline_creation_with_bool',
+        on_push=True,
+        on_pull_request=True,
+    )
+
+
+    @job(name='build', pipeline=mypipe)
+    def initial_job():
+        shell('pip install pypipe')
+
+
+    out = GitHubTranspiler(mypipe).to_yaml()
+
+    assert_matches_golden(out, "test_pipeline_creation_with_bool.yml")
