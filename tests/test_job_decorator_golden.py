@@ -1,5 +1,5 @@
 from pypipe.decorators import job
-from pypipe.api import shell, checkout
+from pypipe.steps import shell, checkout
 from pypipe.transpilers.github import GitHubTranspiler
 from pypipe.registry import register_pipeline
 

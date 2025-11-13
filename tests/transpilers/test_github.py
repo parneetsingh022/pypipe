@@ -1,6 +1,6 @@
 import textwrap
 from pypipe.transpilers.github import GitHubTranspiler
-from pypipe.steps import RunShellStep, CheckoutStep
+from pypipe.steps.builtin import RunShellStep, CheckoutStep
 from pypipe.models import Pipeline
 
 
