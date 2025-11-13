@@ -35,8 +35,7 @@ class PipelineSettings:
         # Case 3: User passed True (just enable it)
         # e.g., on_push=True
         if config is True:
-            from .transpilers.github import _Blank
-            return _Blank() # Empty "run on all"
+            return None # Empty "run on all"
 
         # Case 4: User passed a full dict (power user)
         # e.g., on_push={"branches": ["main"], "paths": ["src/**"]}
@@ -58,11 +57,15 @@ class PipelineSettings:
         
         # Transpile the "magic" inputs
         push_config = self._transpile_trigger(self.on_push)
-        if push_config is not None:
+        if self.on_push is True:
+            on_section["push"] = None
+        elif push_config is not None:
             on_section["push"] = push_config
 
         pr_config = self._transpile_trigger(self.on_pull_request)
-        if pr_config is not None:
+        if self.on_pull_request is True:
+            on_section["pull_request"] = None
+        elif pr_config is not None:
             on_section["pull_request"] = pr_config
             
         # --- Defaulting Logic ---
