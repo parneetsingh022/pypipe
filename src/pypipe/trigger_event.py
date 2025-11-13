@@ -9,7 +9,7 @@ class PipelineSettings:
 
     name: Optional[str] = None
     
-    on_push: Any = "main" 
+    on_push: Any = None
     on_pull_request: Any = None
 
 

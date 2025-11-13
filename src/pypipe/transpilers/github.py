@@ -32,11 +32,10 @@ class GitHubTranspiler:
 
             jobs_dict[job.name] = job_dict
 
-        workflow = {
-            "name": self.pipeline.name,
-            "on": self.pipeline.pipeline_settings.to_dict(),
-            "jobs": jobs_dict,
-        }
+        workflow = CommentedMap()
+        workflow["name"] = self.pipeline.name
+        workflow["on"] = self.pipeline.pipeline_settings.to_dict()
+        workflow["jobs"] = jobs_dict
 
         return workflow
 

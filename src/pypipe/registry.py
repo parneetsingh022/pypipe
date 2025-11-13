@@ -9,8 +9,9 @@ Notes:
     - The default pipeline is always available under the name "default".
 """
 
-from typing import Dict
+from typing import Dict, Any
 from .models import Pipeline
+from .trigger_event import PipelineSettings
 
 # Global registry of pipelines
 _pipelines: Dict[str, Pipeline] = {"ci": Pipeline(name='ci')}
@@ -55,3 +56,37 @@ def register_pipeline(name: str) -> Pipeline:
     if name not in _pipelines:
         _pipelines[name] = Pipeline(name=name)
     return _pipelines[name]
+
+
+def pipeline(name: str, **kwargs: Any) -> Pipeline:
+    """
+    Get, create, or configure a pipeline's settings.
+
+    This is the main user-facing function for setting pipeline-level
+    options like 'on_push' or 'on_pull_request'.
+
+    Args:
+        name (str): The name of the pipeline (defaults to "ci").
+        **kwargs: Any valid arguments for the PipelineSettings
+                  dataclass (e.g., on_push="main", on_pull_request=True).
+    
+    Returns:
+        Pipeline: The configured pipeline instance.
+    """
+    # 1. Get-or-create the pipeline object using your existing function
+    pipe_instance = register_pipeline(name)
+    
+    # 2. Create a new settings object from all the user's kwargs
+    #    The 'name' from PipelineSettings is for the YAML, not the key.
+    if 'name' not in kwargs:
+        kwargs['name'] = pipe_instance.name
+
+    new_settings = PipelineSettings(**kwargs)
+    
+    # 3. Overwrite the pipeline's default settings with the new ones
+    pipe_instance.pipeline_settings = new_settings
+    
+    return pipe_instance
+
+def default_pipeline(**kwargs: Any) -> Pipeline:
+    return pipeline(name='ci', **kwargs)
