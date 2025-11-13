@@ -57,15 +57,11 @@ class PipelineSettings:
         
         # Transpile the "magic" inputs
         push_config = self._transpile_trigger(self.on_push)
-        if self.on_push is True:
-            on_section["push"] = None
-        elif push_config is not None:
+        if push_config is not None or self.on_push is True:
             on_section["push"] = push_config
 
         pr_config = self._transpile_trigger(self.on_pull_request)
-        if self.on_pull_request is True:
-            on_section["pull_request"] = None
-        elif pr_config is not None:
+        if pr_config is not None or self.on_pull_request is True:
             on_section["pull_request"] = pr_config
             
         # --- Defaulting Logic ---
