@@ -53,7 +53,7 @@ class PipelineSettings:
         Returns the dictionary for the 'on:' block in a
         GitHub Actions workflow.
         """
-        on_section = {}
+        on_section: Dict[str, Any] = {}
         
         # Transpile the "magic" inputs
         push_config = self._transpile_trigger(self.on_push)
