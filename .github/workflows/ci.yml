@@ -1,4 +1,4 @@
-name: tests
+name: ci
 
 on:
   push:
@@ -6,57 +6,115 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
+  # ---------- Security (Bandit) ----------
+  security:
+    name: Bandit (SAST)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Bandit
+        run: |
+          python -m pip install -U pip
+          pip install bandit
+
+      # If your code is in src/, prefer scanning that path.
+      - name: Run Bandit
+        run: |
+          if [ -d "src" ]; then
+            bandit -r src/ -c pyproject.toml
+          else
+            bandit -r . -c pyproject.toml
+          fi
+
+  # ---------- Tests (matrix) ----------
   tests:
+    name: Tests (py${{ matrix.py }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        tox-env: [py311, py312, py313, py314]
+        py: ['3.11', '3.12', '3.13', '3.14']
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.tox-env == 'py311' && '3.11' || matrix.tox-env == 'py312' && '3.12' || matrix.tox-env == 'py313' && '3.13' || '3.14' }}
-      - run: python -m pip install -U pip
-      - run: pip install tox
+          python-version: ${{ matrix.py }}
 
-      - name: Run tests
-        run: tox -q -e ${{ matrix.tox-env }}
-        env:
-          COVERAGE_FILE: .coverage.${{ matrix.tox-env }}
-
-      - name: Generate coverage.xml
+      - name: Install dependencies
         run: |
-          python -m pip install -U coverage
-          python -m coverage xml -i -o coverage.xml
+          python -m pip install -U pip
+          # Install your package + test tools. If you have a [project.optional-dependencies].dev,
+          # replace line below with: pip install -e ".[dev]"
+          pip install -e .
+          pip install pytest pytest-cov
+
+      - name: Run tests with coverage
+        run: |
+          # If you don't use src/ layout, change --cov=src to your package/module.
+          pytest -q --maxfail=1 --disable-warnings \
+            --cov=src --cov-report=xml:coverage.xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           files: coverage.xml
-          flags: ${{ matrix.tox-env }}
-          name: ${{ matrix.tox-env }}
+          flags: py${{ matrix.py }}
+          name: py${{ matrix.py }}
           fail_ci_if_error: true
 
+  # ---------- Lint ----------
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: python -m pip install -U pip
-      - run: pip install tox
-      - run: tox -q -e lint
 
-  typecheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python -m pip install -U pip
-      - run: pip install tox
-      - run: tox -q -e typecheck
+
+      - name: Install linters
+        run: |
+          python -m pip install -U pip
+          pip install ruff
+
+      - name: Ruff
+        run: |
+          # Ruff reads config from pyproject.toml ([tool.ruff])
+          ruff check .
+
+  # ---------- Typecheck ----------
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install mypy + deps
+        run: |
+          python -m pip install -U pip
+          pip install -e .
+          pip install mypy
+
+      - name: Run mypy
+        run: |
+          # mypy picks up config from pyproject.toml ([tool.mypy])
+          if [ -d "src" ]; then
+            mypy src
+          else
+            mypy .
+          fi

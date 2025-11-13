@@ -55,6 +55,21 @@ repos:
         pass_filenames: false
         stages: [pre-push]
 
+    # --- Bandit security scan ---
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.9
+    hooks:
+      - id: bandit
+        name: bandit (security)
+        args:
+          - "-r"
+          - "src"
+          - "-x"
+          - "tests"
+          - "-c"
+          - "pyproject.toml"
+        types_or: [python]
+
 # Global excludes to avoid touching generated stuff
 exclude: |
   (?x)^(
