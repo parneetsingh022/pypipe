@@ -224,8 +224,6 @@ def test_echo_basic(monkeypatch):
     # mock active job
     job = Job(name="build")
 
-    from pypipe.steps import active_job, echo
-
     with active_job(job):
         step = echo("Hello world")
 
