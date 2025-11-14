@@ -3,7 +3,7 @@ from ruamel.yaml.comments import CommentedMap
 
 from typing import Any
 
-from collections.abc import Mapping, MutableMapping
+from collections.abc import MutableMapping
 
 from collections.abc import Iterable
 from ..models import Pipeline
@@ -19,7 +19,7 @@ class GitHubTranspiler:
         # Ensure deterministic, duplicate-free 'needs'
         return sorted(set(items))
 
-    def to_dict(self) -> Mapping[str, Any]:
+    def to_dict(self) -> MutableMapping[str, Any]:
         jobs_dict: dict[str, Any] = {}
 
         for job in self.pipeline.get_job_order():
