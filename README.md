@@ -29,9 +29,9 @@ build, lint, test, coverage, and deploy — all orchestrated through `pypipe`.
 
 ```python
 from pypipe import job, default_pipeline
-from pypipe.steps import shell, checkout, upload_artifact, download_artifact
+from pypipe.steps import shell, checkout
 
-# Define a default pipeline that triggers on pushes to main and dev,
+# Define a default pipeline that triggers on main and dev branches,
 # and on pull requests to main.
 default = default_pipeline(
     on_push=['main', 'dev'],
@@ -48,17 +48,15 @@ def lint():
 
 @job(name='build', depends_on=['lint'])
 def build():
-    """Build the package and upload the wheel."""
+    """Build the package."""
     checkout()
     shell('pip install -U build')
     shell('python -m build')
-    upload_artifact('dist/', name='build-artifacts')
 
 @job(name='test', depends_on=['build'])
 def test():
     """Run unit tests with coverage."""
     checkout()
-    download_artifact('build-artifacts', path='dist/')
     shell('pip install -e .[dev]')
     shell('pytest --cov=src --cov-report=xml')
 
