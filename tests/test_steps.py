@@ -256,7 +256,7 @@ def test_api_shell_adds_step_and_returns_it():
         step = shell("echo hi")
     assert step is job.steps[-1]
     assert step.command == "echo hi"
-    # name should be None if not provided via API
+    # name should be empty string if not provided via API
     assert step.name == ""
     assert step.to_github_dict() == {"run": "echo hi"}
 
