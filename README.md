@@ -6,6 +6,7 @@
 <p align="center">
   <strong><a href="https://pypipe.readthedocs.io/">Read the Full Documentation</a></strong>
 </p>
+
 ---
 
 <p align="center">
