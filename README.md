@@ -3,12 +3,18 @@
 <p align="center">
   <em>A Python-native CI/CD framework for defining, testing, and transpiling pipelines to GitHub Actions.</em>
 </p>
+<p align="center">
+  <strong><a href="https://pypipe.readthedocs.io/">Read the Full Documentation</a></strong>
+</p>
 
 ---
 
 <p align="center">
   <a href="https://github.com/parneetsingh022/pypipe/actions/workflows/ci.yml">
     <img src="https://github.com/parneetsingh022/pypipe/actions/workflows/ci.yml/badge.svg" alt="CI Status">
+  </a>
+  <a href="https://pypipe.readthedocs.io/">
+    <img src="https://img.shields.io/readthedocs/pypipe" alt="Documentation Status">
   </a>
   <a href="https://codecov.io/gh/parneetsingh022/pypipe">
     <img src="https://codecov.io/gh/parneetsingh022/pypipe/branch/main/graph/badge.svg" alt="Coverage">
