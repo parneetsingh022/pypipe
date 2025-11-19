@@ -1,5 +1,5 @@
 Steps API
-========
+============
 
 Job bodies run inside the :func:`pypipe.steps.active_job` context manager,
 which the ``@job`` decorator sets up before executing the user function.
@@ -7,7 +7,7 @@ Every helper in :mod:`pypipe.steps.api` fetches the active job and
 appends a concrete :class:`pypipe.models.Step` implementation to it.
 
 Builtin helpers
----------------
+------------------
 
 ``shell(command, name="")``
    Wraps :class:`pypipe.steps.builtin.RunShellStep`.  The command is split
@@ -25,7 +25,7 @@ Builtin helpers
    ``echo "message"`` for quick debugging statements.
 
 Example job
------------
+--------------
 
 .. code-block:: python
 
@@ -41,7 +41,7 @@ Example job
        shell("pytest -q", name="tests")
 
 Custom steps
-------------
+---------------
 
 To create specialized behavior, subclass :class:`pypipe.models.Step` and
 implement ``execute`` (for local runs) and ``to_github_dict`` (for

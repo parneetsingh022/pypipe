@@ -1,5 +1,5 @@
 Command Line Interface
-======================
+=========================
 
 The :mod:`pypipe.cli` module exposes a ``pypipe`` console script with a
 single ``build`` sub-command.  It scans a source directory for pipeline
@@ -7,14 +7,14 @@ files, executes them to populate the registry, and transpiles each
 registered pipeline to GitHub Actions YAML.
 
 Usage
------
+--------
 
 .. code-block:: console
 
    $ pypipe build --src-dir .pipe --out-dir .github/workflows --clean
 
 Options
--------
+----------
 
 ``--src-dir``
    Defaults to ``.pipe``.  Every file matching ``pipeline_*.py`` or
@@ -30,7 +30,7 @@ Options
    useful safety valve when rotating pipelines.
 
 Exit status
------------
+-------------
 
 ``cmd_build`` returns ``0`` even when no pipelines were registered so the
 command is safe to run in empty repositories.  Any exception raised while
