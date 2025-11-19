@@ -1,9 +1,11 @@
 name: Publish to PyPI
 
 on:
-  release:
-    types: [published]
-  # Allows you to run this manually from the Actions tab for testing
+  push:
+    tags:
+      - 'v*'  # Triggers on tags like v0.1.0, v1.2.3, etc.
+
+  # Allows to run this manually from the Actions tab for testing
   workflow_dispatch:
 
 jobs:
