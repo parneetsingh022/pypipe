@@ -25,6 +25,8 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.autosectionlabel",
     "sphinx_autodoc_typehints",
+    "sphinx.ext.doctest",
+    "sphinx.ext.linkcheck",
 ]
 
 html_css_files = ["css/custom.css"]
