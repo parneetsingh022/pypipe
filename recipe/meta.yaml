@@ -13,6 +13,7 @@ requirements:
   host:
     - python >=3.11
     - pip
+    - hatchling
   run:
     - python
 
